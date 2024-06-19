@@ -1,9 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Hello World!</title>
+    <meta charset="UTF-8">
+    <title>Ohio Lottery EV</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <h1>Ohio Lottery EV</h1>
+    <h2>Updated daily from Ohio Lottery website</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Ticket</th>
+                <th>Odds</th>
+                <th>EV Gross</th>
+                <th>EV Net</th>
+                <th>Percent Loss</th>
+            </tr>
+        </thead>
+        <tbody id="dataRows">
+            {% for row in data %}
+            <tr>
+                <td>{{ row.ticket }}</td>
+                <td>{{ row.odds }}</td>
+                <td>{{ row.ev_gross }}</td>
+                <td>{{ row.ev_net }}</td>
+                <td>{{ row.percent_loss }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // JS to find and highlight the row with the highest percent loss (best ticket to buy)
+        document.addEventListener('DOMContentLoaded', function() {
+            var tableBody = document.getElementById('dataRows');
+            var rows = tableBody.getElementsByTagName('tr');
+            var maxPercentLoss = -Infinity;
+            var maxRow = null;
+
+            for (var i = 0; i < rows.length; i++) {
+                var percentLossCell = rows[i].cells[4]; // Index 4 corresponds to "Percent Loss" column
+                var percentLoss = parseFloat(percentLossCell.textContent || percentLossCell.innerText);
+                
+                if (!isNaN(percentLoss) && percentLoss > maxPercentLoss) {
+                    maxPercentLoss = percentLoss;
+                    maxRow = rows[i];
+                }
+            }
+
+            if (maxRow !== null) {
+                maxRow.classList.add('highlight');
+            }
+        });
+    </script>
 </body>
 </html>
