@@ -55,15 +55,12 @@ def classify_scraped_data(prize_list):
 def create_and_insert_data(db_config, prize_info):
     # Connect to the MySQL database
     conn = mysql.connector.connect(**db_config)
-    cursor = conn.cursor()
-    
+    cursor = conn.cursor() 
     for title, prizes in prize_info.items():
         # Create a sanitized table name
-        table_name = title.replace(' ', '_').replace('(', '').replace(')', '').replace('$', '').replace(',', '')
-        
-        # Drop the table if it already exists (for clean start)
+        table_name = title.replace(' ', '_').replace('(', '').replace(')', '').replace('$', '').replace(',', '').replace('\'','')
+        # Drop the table if it already exists (TODO: change to add to data)
         cursor.execute(f"DROP TABLE IF EXISTS `{table_name}`")
-        
         # Create the table
         create_table_query = f"""
         CREATE TABLE `{table_name}` (
@@ -71,16 +68,13 @@ def create_and_insert_data(db_config, prize_info):
             remaining INT NOT NULL
         )
         """
-        cursor.execute(create_table_query)
-        
+        cursor.execute(create_table_query)      
         # Insert the data into the table
         for prize, remaining in prizes.items():
             insert_query = f"INSERT INTO `{table_name}` (prize, remaining) VALUES (%s, %s)"
-            cursor.execute(insert_query, (prize, remaining))
-    
+            cursor.execute(insert_query, (prize, remaining))     
     # Commit the transaction
     conn.commit()
-    
     # Close the cursor and connection
     cursor.close()
     conn.close()
