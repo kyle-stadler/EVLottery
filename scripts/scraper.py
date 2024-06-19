@@ -59,7 +59,7 @@ def create_and_insert_data(db_config, prize_info):
     for title, prizes in prize_info.items():
         # Create a sanitized table name
         table_name = title.replace(' ', '_').replace('(', '').replace(')', '').replace('$', '').replace(',', '').replace('\'','')
-        # Drop the table if it already exists (TODO: change to add to data)
+        # Drop the table if it already exists (TODO: change to add to data if history is wanted)
         cursor.execute(f"DROP TABLE IF EXISTS `{table_name}`")
         # Create the table
         create_table_query = f"""
